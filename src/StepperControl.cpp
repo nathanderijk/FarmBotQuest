@@ -61,7 +61,7 @@ void StepperControl::reportStatus(StepperControlAxis *axis, int axisStatus)
 {  
   serialBuffer += COMM_REPORT_CMD_STATUS;
   serialBuffer += " ";
-  serialBuffer += axis->label;
+  serialBuffer += axis->channelLabel;
   serialBuffer += axisStatus;
   serialBuffer += CurrentState::getInstance()->getQAndNewLine();
 
@@ -76,7 +76,7 @@ void StepperControl::reportCalib(StepperControlAxis *axis, int calibStatus)
 {
   Serial.print(COMM_REPORT_CALIB_STATUS);
   Serial.print(" ");
-  Serial.print(axis->label);
+  Serial.print(axis->channelLabel);
   Serial.print(calibStatus);
   CurrentState::getInstance()->printQAndNewLine();
 }
@@ -142,13 +142,14 @@ StepperControl::StepperControl()
 
   // Create the axis controllers
 
-  axisX = StepperControlAxis();
-  axisY = StepperControlAxis();
-  axisZ = StepperControlAxis();
+  /**/ // axisX = StepperControlAxisTMC2130();
+  axisX = StepperControlAxisA4988();
+  axisY = StepperControlAxisA4988();
+  axisZ = StepperControlAxisA4988();
 
-  axisX.label = 'X';
-  axisY.label = 'Y';
-  axisZ.label = 'Z';
+  axisX.channelLabel = 'X';
+  axisY.channelLabel = 'Y';
+  axisZ.channelLabel = 'Z';
 
   // Create the encoder controller
 
@@ -198,26 +199,28 @@ void StepperControl::loadSettings()
 void StepperControl::test()
 {
 
-  Serial.print("R99");
-  Serial.print(" mot x = ");
-  Serial.print(axisX.currentPosition());
-  Serial.print(" enc x = ");
-  Serial.print(encoderX.currentPosition());
-  Serial.print("\r\n");
+  axisX.setMotorStep();
 
-  Serial.print("R99");
-  Serial.print(" mot y = ");
-  Serial.print(axisY.currentPosition());
-  Serial.print(" enc y = ");
-  Serial.print(encoderY.currentPosition());
-  Serial.print("\r\n");
+  //Serial.print("R99");
+  //Serial.print(" mot x = ");
+  //Serial.print(axisX.currentPosition());
+  //Serial.print(" enc x = ");
+  //Serial.print(encoderX.currentPosition());
+  //Serial.print("\r\n");
 
-  Serial.print("R99");
-  Serial.print(" mot z = ");
-  Serial.print(axisZ.currentPosition());
-  Serial.print(" enc z = ");
-  Serial.print(encoderZ.currentPosition());
-  Serial.print("\r\n");
+  //Serial.print("R99");
+  //Serial.print(" mot y = ");
+  //Serial.print(axisY.currentPosition());
+  //Serial.print(" enc y = ");
+  //Serial.print(encoderY.currentPosition());
+  //Serial.print("\r\n");
+
+  //Serial.print("R99");
+  //Serial.print(" mot z = ");
+  //Serial.print(axisZ.currentPosition());
+  //Serial.print(" enc z = ");
+  //Serial.print(encoderZ.currentPosition());
+  //Serial.print("\r\n");
 
   // read changes in encoder
   //encoderX.readEncoder();
@@ -902,7 +905,7 @@ int StepperControl::calibrateAxis(int axis)
 
   Serial.print("R99");
   Serial.print(" axis ");
-  Serial.print(calibAxis->label);
+  Serial.print(calibAxis->channelLabel);
   Serial.print(" move to start for calibration");
   Serial.print("\r\n");
 
@@ -1007,7 +1010,7 @@ int StepperControl::calibrateAxis(int axis)
 
   Serial.print("R99");
   Serial.print(" axis ");
-  Serial.print(calibAxis->label);
+  Serial.print(calibAxis->channelLabel);
   Serial.print(" at starting point");
   Serial.print("\r\n");
 
@@ -1044,7 +1047,7 @@ int StepperControl::calibrateAxis(int axis)
 
   Serial.print("R99");
   Serial.print(" axis ");
-  Serial.print(calibAxis->label);
+  Serial.print(calibAxis->channelLabel);
   Serial.print(" calibrating length");
   Serial.print("\r\n");
 
@@ -1127,7 +1130,7 @@ int StepperControl::calibrateAxis(int axis)
 
   Serial.print("R99");
   Serial.print(" axis ");
-  Serial.print(calibAxis->label);
+  Serial.print(calibAxis->channelLabel);
   Serial.print(" at end point");
   Serial.print("\r\n");
 
