@@ -134,8 +134,8 @@ void StepperControlAxis::initTMC2130(int motorCurrent, int  stallSensitivity)
   TMC2130A->shaft_dir(0);                 // Set direction
 
   //TMC2130A->SilentStepStick2130(600); // Set stepper current to 600mA
-  //TMC2130A->stealthChop(1); // Enable extremely quiet stepping
-  //TMC2130A->microsteps(0);
+  TMC2130A->stealthChop(1); // Enable extremely quiet stepping
+  //TMC2130A->microsteps(8);
 
   if (channelLabel == 'X')
   {
@@ -148,10 +148,9 @@ void StepperControlAxis::initTMC2130(int motorCurrent, int  stallSensitivity)
     TMC2130B->sgt(stallSensitivity);       // Set stall detection sensitivity. most -64 to +64 least
     TMC2130B->shaft_dir(0);                // Set direction
 
-                       
     //TMC2130B->SilentStepStick2130(600); // Set stepper current to 600mA
-    //TMC2130B->stealthChop(1); // Enable extremely quiet stepping
-    //TMC2130B->shaft_dir(0);
+    TMC2130B->stealthChop(1); // Enable extremely quiet stepping
+    //TMC2130B->microsteps(8);
   }
 
   setMotorStepWrite = &StepperControlAxis::setMotorStepWriteTMC2130;
