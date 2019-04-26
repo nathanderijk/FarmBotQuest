@@ -33,36 +33,42 @@ include lib/core.Makefile
 include lib/SPI.Makefile
 include lib/Servo.Makefile
 include lib/EEPROM.Makefile
+include lib/TMC2130Stepper.Makefile
 
 # Targets
 include lib/targets/ramps_v14.Makefile
 include lib/targets/farmduino_v10.Makefile
 include lib/targets/farmduino_k14.Makefile
+include lib/targets/farmduino_exp_v20.Makefile
 
 .PHONY: all clean \
 	dep_core dep_core_clean \
 	dep_Servo dep_Servo_clean \
 	dep_SPI dep_SPI_clean \
 	dep_EEPROM dep_EEPROM_clean \
+	dep_TMC2130Stepper dep_TMC2130Stepper_clean \
 	target_ramps_v14 target_ramps_v14_clean \
 	target_farmduino_v10 target_farmduino_v10_clean \
-	target_farmduino_k14 target_farmduino_k14_clean
+	target_farmduino_k14 target_farmduino_k14_clean \
+	farmduino_exp_v20 farmduino_exp_v20_clean
 
-DEPS := $(DEP_CORE) $(DEP_SPI) $(DEP_Servo) $(DEP_EEPROM)
-DEPS_OBJ := $(DEP_SPI_OBJ) $(DEP_Servo_OBJ) $(DEP_EEPROM_OBJ)
-DEPS_CFLAGS := $(DEP_CORE_CFLAGS) $(DEP_SPI_CFLAGS) $(DEP_Servo_CFLAGS) $(DEP_EEPROM_CFLAGS)
+DEPS := $(DEP_CORE) $(DEP_SPI) $(DEP_Servo) $(DEP_EEPROM) $(DEP_TMC2130Stepper)
+DEPS_OBJ := $(DEP_SPI_OBJ) $(DEP_Servo_OBJ) $(DEP_EEPROM_OBJ) $(DEP_TMC2130Stepper_OBJ)
+DEPS_CFLAGS := $(DEP_CORE_CFLAGS) $(DEP_SPI_CFLAGS) $(DEP_Servo_CFLAGS) $(DEP_EEPROM_CFLAGS) $(DEP_TMC2130Stepper_CFLAGS)
 
-all: $(BIN_DIR) $(DEPS) target_ramps_v14 target_farmduino_v10 target_farmduino_k14
+all: $(BIN_DIR) $(DEPS) target_ramps_v14 target_farmduino_v10 target_farmduino_k14 farmduino_exp_v20
 
-clean: target_ramps_v14_clean target_farmduino_v10_clean target_farmduino_k14_clean
+clean: target_ramps_v14_clean target_farmduino_v10_clean target_farmduino_k14_clean farmduino_exp_v20_clean
 
 strings_test: all
 	$(OBJ_COPY) -I ihex $(TARGET_ramps_v14_HEX)     -O binary $(TARGET_ramps_v14_HEX).bin
 	$(OBJ_COPY) -I ihex $(TARGET_farmduino_v10_HEX) -O binary $(TARGET_farmduino_v10_HEX).bin
 	$(OBJ_COPY) -I ihex $(TARGET_farmduino_k14_HEX) -O binary $(TARGET_farmduino_k14_HEX).bin
+	$(OBJ_COPY) -I ihex $(TARGET_farmduino_exp_v20_HEX) -O binary $(TARGET_farmduino_exp_v20_HEX).bin
 	@strings $(TARGET_ramps_v14_HEX).bin | grep -q "6.4.0.R" 
 	@strings $(TARGET_farmduino_v10_HEX).bin | grep -q "6.4.0.F" 
 	@strings $(TARGET_farmduino_k14_HEX).bin | grep -q "6.4.0.G" 
+	@strings $(TARGET_farmduino_exp_v20_HEX).bin | grep -q "6.4.0.G" 
 
 force_clean:
 	$(RM) -r $(BUILD_DIR) $(BIN_DIR)
