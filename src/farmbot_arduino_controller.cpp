@@ -328,9 +328,31 @@ void setup()
 
     TIMSK2 = (TIMSK2 & B11111110) | 0x01; // Enable timer overflow
     TCCR2B = (TCCR2B & B11111000) | 0x01; // Set divider to 1
-    OCR2A = 4; // Set overflow to 4 for total of 64 µs    
+    OCR2A = 4; // Set overflow to 4 for total of 64 Âµs
 
     pinMode(LED_PIN, OUTPUT);
+
+    pinMode(VACUUM_PIN, OUTPUT);
+    pinMode(WATER_PIN, OUTPUT);
+    pinMode(LIGHTING_PIN, OUTPUT);
+    pinMode(PERIPHERAL_4_PIN, OUTPUT);
+    pinMode(PERIPHERAL_5_PIN, OUTPUT);
+
+    pinMode(UTM_C, INPUT_PULLUP);
+    pinMode(UTM_D, INPUT_PULLUP);
+    if (UTM_E > 0) { pinMode(UTM_E, INPUT_PULLUP); };
+    if (UTM_F > 0) { pinMode(UTM_F, INPUT_PULLUP); };
+    if (UTM_G > 0) { pinMode(UTM_G, INPUT_PULLUP); };
+    if (UTM_H > 0) { pinMode(UTM_H, INPUT_PULLUP); };
+    if (UTM_I > 0) { pinMode(UTM_I, INPUT_PULLUP); };
+    if (UTM_J > 0) { pinMode(UTM_J, INPUT_PULLUP); };
+    if (UTM_K > 0) { pinMode(UTM_K, INPUT_PULLUP); };
+    if (UTM_L > 0) { pinMode(UTM_L, INPUT_PULLUP); };
+
+    pinMode(SERVO_0_PIN, OUTPUT);
+    pinMode(SERVO_1_PIN, OUTPUT);
+    pinMode(SERVO_2_PIN, OUTPUT);
+    pinMode(SERVO_3_PIN, OUTPUT);
 
 #endif
 
