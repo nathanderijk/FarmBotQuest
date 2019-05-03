@@ -29,6 +29,7 @@
 # Visual Studio files
 /.vs
 /src/Debug
+/src/Release
 /src/__vm
 
 # Setting files
