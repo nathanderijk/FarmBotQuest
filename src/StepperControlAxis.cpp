@@ -128,12 +128,12 @@ void StepperControlAxis::initTMC2130(int motorCurrent, int  stallSensitivity)
 
   TMC2130A->rms_current(motorCurrent);    // Set the required current in mA  
   TMC2130A->microsteps(0);                // Minimum of micro steps needed
-  TMC2130A->chm(true);                    // Set the chopper mode to classic const. off time
+  //TMC2130A->chm(true);                  // Set the chopper mode to classic const. off time
   TMC2130A->diag1_stall(1);               // Activate stall diagnostics
   TMC2130A->sgt(stallSensitivity);        // Set stall detection sensitivity. most -64 to +64 least
   TMC2130A->shaft_dir(0);                 // Set direction
 
-  //TMC2130A->SilentStepStick2130(600); // Set stepper current to 600mA
+  TMC2130A->SilentStepStick2130(1200);    // Set stepper current to 1200mA
   TMC2130A->stealthChop(1); // Enable extremely quiet stepping
   //TMC2130A->double_edge_step(1);
   TMC2130A->interpolate(1);
@@ -145,12 +145,12 @@ void StepperControlAxis::initTMC2130(int motorCurrent, int  stallSensitivity)
 
     TMC2130B->rms_current(motorCurrent);   // Set the required current in mA  
     TMC2130B->microsteps(0);               // Minimum of micro steps needed
-    TMC2130B->chm(true);                   // Set the chopper mode to classic const. off time
+    //TMC2130B->chm(true);                 // Set the chopper mode to classic const. off time
     TMC2130B->diag1_stall(1);              // Activate stall diagnostics
     TMC2130B->sgt(stallSensitivity);       // Set stall detection sensitivity. most -64 to +64 least
     TMC2130B->shaft_dir(0);                // Set direction
 
-    //TMC2130B->SilentStepStick2130(600); // Set stepper current to 600mA
+    TMC2130B->SilentStepStick2130(1200);    // Set stepper current to 1200mA
     TMC2130B->stealthChop(1); // Enable extremely quiet stepping
     //TMC2130B->double_edge_step(1);
     TMC2130B->interpolate(1);
