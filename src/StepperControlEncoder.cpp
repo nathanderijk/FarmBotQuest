@@ -12,9 +12,9 @@ StepperControlEncoder::StepperControlEncoder()
   scalingFactor = 10000;
 
   curValChannelA = false;
-  curValChannelA = false;
+  curValChannelB = false;
   prvValChannelA = false;
-  prvValChannelA = false;
+  prvValChannelB = false;
 
   readChannelA = false;
   readChannelAQ = false;
