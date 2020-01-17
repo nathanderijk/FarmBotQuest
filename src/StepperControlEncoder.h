@@ -1,72 +1,59 @@
-/*
- * StepperControlEncoder.h
- *
- *  Created on: 29 okt 2015
- *      Author: Tim Evers
- */
-
 #ifndef STEPPERCONTROLENCODER_H_
 #define STEPPERCONTROLENCODER_H_
 
 #include "Arduino.h"
-//#include "CurrentState.h"
-//#include "ParameterList.h"
 #include "pins.h"
 #include "Config.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <SPI.h>
+
+struct pinReg
+{
+    byte *reg;
+    byte mask;
+};
 
 class StepperControlEncoder
 {
-
 public:
-  StepperControlEncoder();
+    StepperControlEncoder();
+    
+    void loadPins(
+    byte *pinChannelA_reg, byte pinChannelA_mask,
+    byte *pinChannelAQ_reg, byte pinChannelAQ_mask,
+    byte *pinChannelB_reg, byte pinChannelB_mask,
+    byte *pinChannelBQ_reg, byte pinChannelBQ_mask);
 
-  void loadPinNumbers(int channelA, int channelB, int channelAQ, int channelBQ);
-  void loadSettings(int encType, long scaling, int invert);
-
-  // Load the id for the motor dynamics lab encoder
-  void loadMdlEncoderId(MdlSpiEncoders encoder);
-
-  void setPosition(long newPosition);
-  long currentPosition();
-  long currentPositionRaw();
-
-  void checkEncoder(bool channelA, bool channelB, bool channelAQ, bool channelBQ);
-  void processEncoder();
-  void readChannels();
-  void setChannels(bool channelA, bool channelB, bool channelAQ, bool channelBQ);
-  void shiftChannels();
-  void test();
+    void checkEncoder(void);
+    void setPosition(long newPosition);
+    long getPosition(void);
 
 private:
-  // pin settings
-  int pinChannelA;
-  int pinChannelAQ;
-  int pinChannelB;
-  int pinChannelBQ;
+    void shiftChannels(void);
+    void readPins(void);
+    void setChannels(void);
+    void processEncoder(void);
 
-  // channels
-  bool prvValChannelA;
-  bool prvValChannelB;
-  bool curValChannelA;
-  bool curValChannelB;
+    //pin
+    struct pinReg pinChannelA;
+    struct pinReg pinChannelAQ;
+    struct pinReg pinChannelB;
+    struct pinReg pinChannelBQ;
 
-  bool readChannelA;
-  bool readChannelAQ;
-  bool readChannelB;
-  bool readChannelBQ;
+    //channels
+    bool prvValChannelA;
+    bool prvValChannelB;
 
-  // encoder
-  long position;
-  long scalingFactor;
-  float floatScalingFactor;
-  int encoderType;
-  int encoderInvert;
+    bool curValChannelA;
+    bool curValChannelB;
 
-  MdlSpiEncoders mdlEncoder = _MDL_X1;
+    bool readChannelA;
+    bool readChannelAQ;
+    bool readChannelB;
+    bool readChannelBQ;
 
+    // encoder
+    long position;
 };
 
 #endif /* STEPPERCONTROLENCODER_H_ */

@@ -1,10 +1,3 @@
-/*
- * StepperControl.h
- *
- *  Created on: 16 maj 2014
- *      Author: MattLech
- */
-
 #ifndef STEPPERCONTROL_H_
 #define STEPPERCONTROL_H_
 
@@ -19,125 +12,67 @@
 #include <stdlib.h>
 #include "Command.h"
 
-
 class StepperControl
 {
 public:
   StepperControl();
-  StepperControl(StepperControl const &);
-  void operator=(StepperControl const &);
 
   static StepperControl *getInstance();
-  //int moveAbsolute(	long xDest, long yDest,long zDest,
-  //			unsigned int maxStepsPerSecond,
-  //			unsigned int maxAccelerationStepsPerSecond);
+
+  int calibrateAxis(int axis);
+  void handleMovementInterrupt();
+  void loadSettings();
   int moveToCoords(double xDestScaled, double yDestScaled, double zDestScaled,
                    unsigned int xMaxSpd, unsigned int yMaxSpd, unsigned int zMaxSpd,
                    bool homeX, bool homeY, bool homeZ);
-
-  void handleMovementInterrupt();
-  void checkEncoders();
-
-  int calibrateAxis(int axis);
-  //void initInterrupt();
-  void enableMotors();
-  void disableMotors();
-  void disableMotorsEmergency();
-  void primeMotors();
-  bool motorsEnabled();
-
-  void storePosition();
-  void loadSettings();
-
-  void setPositionX(long pos);
-  void setPositionY(long pos);
-  void setPositionZ(long pos);
-
   void reportEncoders();
-  void getEncoderReport();
-
-  void test();
-  void test2();
-	unsigned long i1 = 0;
-	unsigned long i2 = 0;
-  unsigned long i3 = 0;
-  unsigned long i4 = 0;
+  void setPositionX(long posX);
+  void setPositionY(long posY);
+  void setPositionZ(long posZ);
+  void storePosition();
 
 private:
-  StepperControlAxis axisX;
-  StepperControlAxis axisY;
-  StepperControlAxis axisZ;
+  StepperControlAxis axis[3];       //0=x, 2=y, 2=z
+  StepperControlEncoder encoder[3];
 
-  StepperControlEncoder encoderX;
-  StepperControlEncoder encoderY;
-  StepperControlEncoder encoderZ;
+  //prototypes
+  void checkEncoders(void);
+  void createEncoders(void);
+  void createAxis(void);
 
-  //char serialBuffer[100];
-  String serialBuffer;
-  int serialBufferLength = 0;
-  int serialBufferSending = 0;
-  int serialMessageNr = 0;
-  int serialMessageDelay = 0;
+  void updatePosition(void);
+  void updateParameters(void);
+  void resetMovementVariables(void);
 
-  void serialBufferSendNext();
-  void serialBufferEmpty();
+  void calculateDestination(double xDestScaled, double yDestScaled, double zDestScaled);
+  void calculateSpeed(unsigned int xMaxSpd, unsigned int yMaxSpd, unsigned int zMaxSpd);
+  void calculateSpeedDirection(void);
+  void setDestinationHome(bool homeX, bool homeY, bool homeZ);
+  void calculateActiveAxis(void);
 
-  void checkAxisVsEncoder(StepperControlAxis *axis, StepperControlEncoder *encoder, float *missedSteps, long *lastPosition, long *encoderLastPosition, int *encoderUseForPos, float *encoderStepDecay, bool *encoderEnabled);
-  void checkAxisSubStatus(StepperControlAxis *axis, int *axisSubStatus);
+  void loadSettingToStepper(void);
+  void enableStepperDriver(void);
+  void disableStepperDriver(void);
+  void startStepper(void);
 
-  bool axisActive[3] = { false, false, false };
-  int axisSubStep[3] = { 0, 0, 0 };
+  void checkDestinationReached(void);
+  void checkStall(void);
+  void checkEStop(void);
 
-  void loadMotorSettings();
-  void loadEncoderSettings();
-  bool intToBool(int value);
+  //variables
+  long position[3] = {0, 0, 0};
+  long destination[3] = {0, 0 ,0};
+  unsigned int speed[3] = {0, 0, 0};
+  bool directionIsUp[3] = {true, true, true};
+  bool axisIsActive[3] = {false, false, false}; //axis is (going to be) used when moving
+  bool axisIsMoving[3] = {false, false, false}; //axis is moving
 
-  void reportPosition();
-  String getReportPosition();
-
-  void storeEndStops();
-  void reportEndStops();
-  void reportStatus(StepperControlAxis *axis, int axisSubStatus);
-  void reportCalib(StepperControlAxis *axis, int calibStatus);
-
-  unsigned long getMaxLength(unsigned long lengths[3]);
-  bool endStopsReached();
-
-  bool homeIsUp[3] = {false, false, false};
-  long speedMax[3] = {0, 0, 0 };
-  long commandSpeed[3] = { 0, 0, 0 };
-  long speedMin[3] = { 0, 0, 0 };
-  long speedHome[3] = { 0, 0, 0 };
-  long stepsAcc[3] = { 0, 0, 0 };
-  bool motorInv[3] = { false, false, false };
-  long motorMaxSize[3] = { 0, 0, 0};
-  bool motorStopAtMax[3] = { false, false, false };
-  bool motorKeepActive[3] = { false, false, false };
-  bool motor2Inv[3] = { false, false, false };
-  bool motor2Enbl[3] = { false, false, false };
-  bool motorStopAtHome[3] = { false, false, false };
-  bool endStInv[3] = { false, false, false };
-  bool endStInv2[3] = { false, false, false };
-  bool endStEnbl[3] = { false, false, false };
-  long timeOut[3] = { 0, 0, 0 };
-  long stepsPerMm[3] = { 1.0, 1.0, 1.0 };
-
-  float motorConsMissedSteps[3] = { 0, 0, 0 };
-  int motorConsMissedStepsPrev[3] = { 0, 0, 0 };
-  long motorLastPosition[3] = { 0, 0, 0 };
-  long motorConsEncoderLastPosition[3] = { 0, 0, 0 };
-
-  int motorConsMissedStepsMax[3] = { 0, 0, 0 };
-  float motorConsMissedStepsDecay[3] = { 0, 0, 0 };
-  bool motorConsEncoderEnabled[3] = { false, false, false };
-  int motorConsEncoderType[3] = { 0, 0, 0 };
-  long motorConsEncoderScaling[3] = { 0, 0, 0 };
-  int motorConsEncoderUseForPos[3] = { 0, 0, 0 };
-  int motorConsEncoderInvert[3] = { 0, 0, 0 };
-
-  int axisServiced = 0;
-  int axisServicedNext = 0;
-  bool motorMotorsEnabled = false;
+  //parameters
+  long stepsPerMm[3] = {1, 1, 1};
+  long homePosition[3] = {0, 0, 0};
+  long maxPosition[3] = {0, 0, 0};
+  unsigned int maxSpeed[3] = {0, 0, 0};
+  unsigned int homeSpeed[3] = {0, 0, 0};
 };
 
 #endif /* STEPPERCONTROL_H_ */
